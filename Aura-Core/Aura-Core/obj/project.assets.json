@@ -4842,11 +4842,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/saba/Desktop/Aura-Core/Aura-Core/Aura-Core/Aura-Core.csproj",
+      "projectUniqueName": "/Users/saba/Desktop/Aura/Aura-Core/Aura-Core/Aura-Core.csproj",
       "projectName": "Aura-Core",
-      "projectPath": "/Users/saba/Desktop/Aura-Core/Aura-Core/Aura-Core/Aura-Core.csproj",
+      "projectPath": "/Users/saba/Desktop/Aura/Aura-Core/Aura-Core/Aura-Core.csproj",
       "packagesPath": "/Users/saba/.nuget/packages/",
-      "outputPath": "/Users/saba/Desktop/Aura-Core/Aura-Core/Aura-Core/obj/",
+      "outputPath": "/Users/saba/Desktop/Aura/Aura-Core/Aura-Core/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/saba/.nuget/NuGet/NuGet.Config"
