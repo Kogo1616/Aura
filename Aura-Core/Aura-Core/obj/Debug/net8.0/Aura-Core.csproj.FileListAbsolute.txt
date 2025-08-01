@@ -311,3 +311,4 @@
 /Users/saba/Desktop/Aura/Aura-Core/Aura-Core/obj/Debug/net8.0/Aura-Core.pdb
 /Users/saba/Desktop/Aura/Aura-Core/Aura-Core/obj/Debug/net8.0/Aura-Core.genruntimeconfig.cache
 /Users/saba/Desktop/Aura/Aura-Core/Aura-Core/obj/Debug/net8.0/ref/Aura-Core.dll
+/Users/saba/Desktop/Aura/Aura-Core/Aura-Core/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll

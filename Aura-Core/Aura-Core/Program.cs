@@ -3,7 +3,7 @@ using Aura_Core.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
-builder.Services.AddAppServices(builder.Configuration);
+builder.Services.AddAppServices(builder.Configuration, args);
 
 var app = builder.Build();
 

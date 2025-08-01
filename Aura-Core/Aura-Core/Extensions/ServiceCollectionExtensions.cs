@@ -8,8 +8,10 @@ namespace Aura_Core.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration, string[] args)
     {
+        var builder = WebApplication.CreateBuilder(args);
+
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
         services.AddControllers();
@@ -19,12 +21,7 @@ public static class ServiceCollectionExtensions
             .AddEntityFrameworkStores<AuraDbContext>()
             .AddApiEndpoints();
 
-        services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-            })
-            .AddCookie(IdentityConstants.ApplicationScheme)
+        services.AddAuthentication()
             .AddBearerToken(IdentityConstants.BearerScheme);
 
         services.AddDbContext<AuraDbContext>(options =>
@@ -37,7 +34,7 @@ public static class ServiceCollectionExtensions
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Aura API", Version = "v1" });
-        
+
             // Add security definition for Bearer token
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
