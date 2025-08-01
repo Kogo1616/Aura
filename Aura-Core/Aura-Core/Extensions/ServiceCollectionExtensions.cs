@@ -1,0 +1,68 @@
+using Aura_Core.DbContext;
+using Aura_Core.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+
+namespace Aura_Core.Extensions;
+
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+        services.AddControllers();
+
+        // Configure Identity
+        services.AddIdentityCore<User>()
+            .AddEntityFrameworkStores<AuraDbContext>()
+            .AddApiEndpoints();
+
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+            })
+            .AddCookie(IdentityConstants.ApplicationScheme)
+            .AddBearerToken(IdentityConstants.BearerScheme);
+
+        services.AddDbContext<AuraDbContext>(options =>
+            options.UseSqlServer(connectionString));
+
+        services.AddAuthorization();
+
+        // Enhanced Swagger configuration
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Aura API", Version = "v1" });
+        
+            // Add security definition for Bearer token
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = "JWT Authorization header using the Bearer scheme",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer"
+            });
+
+            // Add security requirement
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
+
+        return services;
+    }
+}
