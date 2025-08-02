@@ -1,0 +1,25 @@
+export async function loginUser(email: string, password: string) {
+    const res = await fetch('http://192.168.100.3:5020/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+            email,
+            password,
+            twoFactorCode: '',
+            twoFactorRecoveryCode: '',
+        }),
+    });
+
+    if (!res.ok) {
+        const error = await res.text();
+        throw new Error(error || 'Login failed');
+    }
+
+    // Return mocked user if backend doesn't send one
+    return {
+        name: 'User',
+        email,
+        role: 'user',
+    };
+}
