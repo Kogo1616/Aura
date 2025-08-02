@@ -1,5 +1,8 @@
 using Aura_Core.DbContext;
+using Aura_Core.Interfaces;
 using Aura_Core.Models;
+using Aura_Core.Models.DbModels;
+using Aura_Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -8,7 +11,8 @@ namespace Aura_Core.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration, string[] args)
+    public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration,
+        string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +63,8 @@ public static class ServiceCollectionExtensions
                 }
             });
         });
+
+        services.AddTransient<IUserService, UserService>();
 
         return services;
     }

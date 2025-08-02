@@ -1,4 +1,5 @@
 using Aura_Core.Models;
+using Aura_Core.Models.DbModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

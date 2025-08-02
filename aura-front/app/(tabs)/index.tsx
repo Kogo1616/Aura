@@ -1,4 +1,6 @@
-import React from 'react';
+// app/(tabs)/home.tsx
+
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -6,6 +8,8 @@ import {
     TouchableOpacity,
     Image,
     StyleSheet,
+    ActivityIndicator,
+    Alert,
 } from 'react-native';
 import { router } from 'expo-router';
 
@@ -17,15 +21,40 @@ type Provider = {
     image: string;
 };
 
-const providers: Provider[] = Array.from({ length: 30 }).map((_, i) => ({
-    id: `${i + 1}`,
-    name: `Provider ${i + 1}`,
-    category: i % 3 === 0 ? 'Makeup Artist' : i % 3 === 1 ? 'Hair Stylist' : 'Nail Specialist',
-    rating: +(4 + Math.random()).toFixed(1), // Random rating between 4.0 and 5.0
-    image: `https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i}.jpg`,
-}));
-
 export default function HomeScreen() {
+    const [providers, setProviders] = useState<Provider[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProviders = async () => {
+            try {
+                const response = await fetch('http://192.168.100.3:5020/api/User');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch users');
+                }
+
+                const data = await response.json();
+
+                // Convert backend users to Provider format
+                const mapped = data.map((user: any, i: number) => ({
+                    id: user.id,
+                    name: user.userName,
+                    category: 'Beauty Expert', // Default category
+                    rating: +(4 + Math.random()).toFixed(1),
+                    image: `https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i}.jpg`,
+                }));
+
+                setProviders(mapped);
+            } catch (error: any) {
+                Alert.alert('Error', error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProviders();
+    }, []);
+
     const handleSelect = (item: Provider) => {
         router.push({
             pathname: '../provider-details',
@@ -37,6 +66,14 @@ export default function HomeScreen() {
             },
         });
     };
+
+    if (loading) {
+        return (
+            <View style={styles.loader}>
+                <ActivityIndicator size="large" color="#6A4C93" />
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -62,6 +99,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+    loader: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     title: {
         fontSize: 22,
         fontWeight: '700',

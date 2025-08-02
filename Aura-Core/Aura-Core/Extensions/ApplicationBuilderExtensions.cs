@@ -1,4 +1,5 @@
 using Aura_Core.Models;
+using Aura_Core.Models.DbModels;
 
 namespace Aura_Core.Extensions;
 

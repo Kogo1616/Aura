@@ -43,3 +43,20 @@ export async function registerUser(email: string, password: string) {
         role: 'user',
     };
 }
+
+// lib/api.ts
+export async function fetchUsers() {
+    const res = await fetch('http://192.168.100.3:5020/api/User', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!res.ok) {
+        throw new Error('Failed to fetch users');
+    }
+
+    return res.json();
+}
+
