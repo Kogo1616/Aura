@@ -1,6 +1,6 @@
 // app/(tabs)/home.tsx
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View,
     Text,
@@ -8,10 +8,10 @@ import {
     TouchableOpacity,
     Image,
     StyleSheet,
+    TextInput,
     ActivityIndicator,
 } from 'react-native';
-import { router } from 'expo-router';
-import CustomHeader from '../../components/CustomHeader';
+import {router} from 'expo-router';
 
 type Provider = {
     id: string;
@@ -44,7 +44,7 @@ export default function HomeScreen() {
                 setProviders(mapped);
                 setFiltered(mapped);
             } catch (e) {
-                console.warn('Fetch failed', e);
+                console.warn(e);
             } finally {
                 setLoading(false);
             }
@@ -76,23 +76,39 @@ export default function HomeScreen() {
     if (loading) {
         return (
             <View style={styles.loader}>
-                <ActivityIndicator size="large" color="#6A4C93" />
+                <ActivityIndicator size="large" color="#6A4C93"/>
             </View>
         );
     }
 
     return (
         <View style={styles.container}>
-            <CustomHeader value={search} onChangeText={handleSearch} />
+            <TextInput
+                style={styles.searchInput}
+                placeholderTextColor="#888"
+                placeholder="Search by category"
+                value={search}
+                onChangeText={handleSearch}
+            />
+
+            <View style={styles.filterRow}>
+                <TouchableOpacity style={styles.filterButton}>
+                    <Text style={styles.filterText}>⭐ Rating</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.filterButton}>
+                    <Text style={styles.filterText}>💸 Price</Text>
+                </TouchableOpacity>
+            </View>
+
             <Text style={styles.sectionTitle}>Featured Services</Text>
 
             <FlatList
                 data={filtered}
                 keyExtractor={(item) => item.id}
-                contentContainerStyle={{ paddingBottom: 20 }}
-                renderItem={({ item }) => (
+                contentContainerStyle={{paddingBottom: 20}}
+                renderItem={({item}) => (
                     <TouchableOpacity onPress={() => handleSelect(item)} style={styles.card}>
-                        <Image source={{ uri: item.image }} style={styles.avatar} />
+                        <Image source={{uri: item.image}} style={styles.avatar}/>
                         <View style={styles.info}>
                             <Text style={styles.name}>{item.name}</Text>
                             <Text style={styles.category}>{item.category}</Text>
@@ -106,14 +122,37 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#fff' },
-    loader: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    container: {flex: 1, padding: 16, backgroundColor: '#fff'},
+    loader: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+    searchInput: {
+        backgroundColor: '#f0f0f0',
+        borderRadius: 10,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        fontSize: 16,
+        marginBottom: 12,
+        color: '#000'
+    },
+    filterRow: {
+        flexDirection: 'row',
+        gap: 12,
+        marginBottom: 20,
+    },
+    filterButton: {
+        backgroundColor: '#f0f0f0',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 20,
+    },
+    filterText: {
+        fontSize: 14,
+        color: '#333',
+    },
     sectionTitle: {
         fontSize: 18,
         fontWeight: '600',
         marginBottom: 12,
         color: '#333',
-        marginHorizontal: 16,
     },
     card: {
         flexDirection: 'row',
@@ -121,13 +160,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: 14,
         borderRadius: 12,
-        marginHorizontal: 16,
         marginBottom: 12,
         elevation: 2,
         shadowColor: '#000',
         shadowOpacity: 0.05,
         shadowRadius: 6,
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
     },
     avatar: {
         width: 50,
