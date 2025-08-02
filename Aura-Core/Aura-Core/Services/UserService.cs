@@ -1,6 +1,7 @@
 using Aura_Core.DbContext;
 using Aura_Core.Interfaces;
 using Aura_Core.Models.DbModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aura_Core.Services;
 
@@ -15,7 +16,8 @@ public class UserService : IUserService
 
     public List<User> GetUsers()
     {
-        var users = _dbContext.Users.ToList();
+        var users = _dbContext.Users
+            .ToList();
         return users;
     }
 }

@@ -1,5 +1,4 @@
 using Aura_Core.Interfaces;
-using Aura_Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aura_Core.Controllers;
@@ -18,6 +17,7 @@ public class UserController : ControllerBase
     [HttpGet]
     public IActionResult Users()
     {
-        return Ok(_userService.GetUsers());
+        var providers = _userService.GetUsers();
+        return Ok(providers);
     }
 }
