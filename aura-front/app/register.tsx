@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useAuthStore } from '../stores/useAuthStore';
 import { router } from 'expo-router';
+import { loginUser, registerUser } from '../api/auth';
 
 export default function RegisterScreen() {
     const [email, setEmail] = useState('');
@@ -20,58 +21,20 @@ export default function RegisterScreen() {
 
     const handleRegister = async () => {
         if (!email || !password || !confirmPassword) {
-            Alert.alert('Please fill all fields');
-            return;
+            return Alert.alert('Validation', 'Please fill all fields');
         }
 
         if (password !== confirmPassword) {
-            Alert.alert('Passwords do not match');
-            return;
+            return Alert.alert('Validation', 'Passwords do not match');
         }
 
         try {
             setLoading(true);
 
-            // 🔐 1. Register the user
-            const registerRes = await fetch('http://192.168.100.3:5020/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password, role }),
-            });
+            await registerUser(email, password, role);
+            const loggedUser = await loginUser(email, password);
+            login(loggedUser);
 
-            if (!registerRes.ok) {
-                const error = await registerRes.text();
-                throw new Error(error || 'Registration failed');
-            }
-
-            // 🔐 2. Then log in immediately
-            const loginRes = await fetch('http://192.168.100.3:5020/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({
-                    email,
-                    password,
-                    twoFactorCode: '',
-                    twoFactorRecoveryCode: '',
-                }),
-            });
-
-            if (!loginRes.ok) {
-                const error = await loginRes.text();
-                throw new Error(error || 'Login after register failed');
-            }
-
-            const result = await loginRes.json();
-
-            // ✅ 3. Save user in auth store
-            login({
-                email,
-                name: 'New User',
-                role,
-            });
-
-            // ✅ 4. Redirect to home
             router.replace('/');
         } catch (err: any) {
             Alert.alert('Error', err.message || 'Something went wrong');
@@ -87,41 +50,49 @@ export default function RegisterScreen() {
             <TextInput
                 style={styles.input}
                 placeholder="Email"
-                autoCapitalize="none"
                 placeholderTextColor="#999"
+                autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Password"
+                placeholderTextColor="#999"
                 secureTextEntry
                 value={password}
-                placeholderTextColor="#999"
                 onChangeText={setPassword}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Confirm Password"
-                secureTextEntry
                 placeholderTextColor="#999"
+                secureTextEntry
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
             />
 
             <View style={styles.roleContainer}>
-                <TouchableOpacity
-                    style={[styles.roleButton, role === 'user' && styles.roleSelected]}
-                    onPress={() => setRole('user')}
-                >
-                    <Text style={role === 'user' ? styles.roleTextSelected : styles.roleText}>User</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.roleButton, role === 'provider' && styles.roleSelected]}
-                    onPress={() => setRole('provider')}
-                >
-                    <Text style={role === 'provider' ? styles.roleTextSelected : styles.roleText}>Provider</Text>
-                </TouchableOpacity>
+                {['user', 'provider'].map((type) => (
+                    <TouchableOpacity
+                        key={type}
+                        style={[
+                            styles.roleButton,
+                            role === type && styles.roleSelected,
+                        ]}
+                        onPress={() => setRole(type as 'user' | 'provider')}
+                    >
+                        <Text
+                            style={
+                                role === type
+                                    ? styles.roleTextSelected
+                                    : styles.roleText
+                            }
+                        >
+                            {type.charAt(0).toUpperCase() + type.slice(1)}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
             </View>
 
             <TouchableOpacity
@@ -160,7 +131,8 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         padding: 12,
         borderRadius: 10,
-        marginBottom: 14
+        marginBottom: 14,
+        color: '#000',
     },
     roleContainer: {
         flexDirection: 'row',

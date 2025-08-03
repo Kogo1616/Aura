@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aura_Core.Services;
 
-public class UserService : IUserService
+public class ProviderService : IUserService
 {
     private readonly AuraDbContext _dbContext;
     private readonly UserManager<User> _userManager;
 
-    public UserService(AuraDbContext dbContext, UserManager<User> userManager)
+    public ProviderService(AuraDbContext dbContext, UserManager<User> userManager)
     {
         _dbContext = dbContext;
         _userManager = userManager;

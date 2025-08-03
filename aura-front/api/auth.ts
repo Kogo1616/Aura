@@ -24,11 +24,11 @@ export async function loginUser(email: string, password: string) {
     };
 }
 
-export async function registerUser(email: string, password: string) {
+export async function registerUser(email: string, password: string, role: 'user' | 'provider') {
     const registerRes = await fetch('http://192.168.100.3:5020/register', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({email, password}),
+        body: JSON.stringify({email, password, role}),
     });
 
     if (!registerRes.ok) {
@@ -36,20 +36,12 @@ export async function registerUser(email: string, password: string) {
         throw new Error(error || 'Registration failed');
     }
 
-    // Return mocked user if backend doesn't send one
     return {
         name: 'User',
         email,
-        role: 'user',
+        role,
     };
 }
-
-// lib/api.ts
-
-export type ProviderDto = {
-    id: string;
-    userName: string;
-};
 
 export async function fetchProviders(): Promise<ProviderDto[]> {
     const res = await fetch('http://192.168.100.3:5020/api/Provider/providers', {
@@ -66,4 +58,8 @@ export async function fetchProviders(): Promise<ProviderDto[]> {
     return res.json();
 }
 
+export type ProviderDto = {
+    id: string;
+    userName: string;
+};
 
