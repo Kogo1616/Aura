@@ -1,6 +1,7 @@
 using Aura_Core.DbContext;
 using Aura_Core.Interfaces;
 using Aura_Core.Models.DbModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aura_Core.Services;
@@ -8,16 +9,18 @@ namespace Aura_Core.Services;
 public class UserService : IUserService
 {
     private readonly AuraDbContext _dbContext;
+    private readonly UserManager<User> _userManager;
 
-    public UserService(AuraDbContext dbContext)
+    public UserService(AuraDbContext dbContext, UserManager<User> userManager)
     {
         _dbContext = dbContext;
+        _userManager = userManager;
     }
 
-    public List<User> GetUsers()
+    public async Task<List<User>> GetUsers()
     {
-        var users = _dbContext.Users
-            .ToList();
-        return users;
+        var providers = (await _userManager.GetUsersInRoleAsync("Provider")).ToList();
+        
+        return providers;
     }
 }

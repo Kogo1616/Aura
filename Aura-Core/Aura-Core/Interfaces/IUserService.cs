@@ -4,5 +4,5 @@ namespace Aura_Core.Interfaces;
 
 public interface IUserService
 {
-    List<User> GetUsers();
+    Task<List<User>> GetUsers();
 }
