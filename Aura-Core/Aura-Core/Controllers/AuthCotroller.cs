@@ -1,9 +1,5 @@
 using Aura_Core.Interfaces;
-using Aura_Core.Models;
-using Aura_Core.Models.DbModels;
 using Aura_Core.Models.Request;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aura_Core.Controllers;
@@ -17,17 +13,6 @@ public class AuthCotroller : ControllerBase
     public AuthCotroller(IAuthService authService)
     {
         _authService = authService;
-    }
-
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] UserLoginReuquestModel request)
-    {
-        var result = await _authService.Login(request);
-
-        if (result.Succeeded)
-            return Ok(new { Message = "Login successful" });
-
-        return Unauthorized("Invalid credentials");
     }
 
     [HttpPost("register")]

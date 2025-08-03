@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddControllers();
 
         // Configure Identity
-        services.AddIdentityCore<User>()
+        services.AddIdentity<User, IdentityRole>()
             .AddEntityFrameworkStores<AuraDbContext>()
             .AddApiEndpoints();
 

@@ -5,6 +5,5 @@ namespace Aura_Core.Interfaces;
 
 public interface IAuthService
 {
-    Task<SignInResult> Login(UserLoginReuquestModel request);
     Task<IdentityResult> Register(UserRegisterReuquestModel request);
 }
