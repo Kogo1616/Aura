@@ -12,6 +12,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import {router} from 'expo-router';
+import {fetchProviders, ProviderDto} from '../../api/auth';
 
 type Provider = {
     id: string;
@@ -28,12 +29,11 @@ export default function HomeScreen() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchProviders = async () => {
+        const loadProviders = async () => {
             try {
-                const res = await fetch('http://192.168.100.3:5020/api/User');
-                const data = await res.json();
-
-                const mapped = data.map((user: any, i: number) => ({
+                const data = await fetchProviders();
+                console.log(data);
+                const mapped = data.map((user: ProviderDto, i: number) => ({
                     id: user.id,
                     name: user.userName,
                     category: i % 3 === 0 ? 'Hair Stylist' : i % 3 === 1 ? 'Massage Therapist' : 'Makeup Artist',
@@ -50,7 +50,7 @@ export default function HomeScreen() {
             }
         };
 
-        fetchProviders();
+        loadProviders();
     }, []);
 
     const handleSearch = (text: string) => {
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         fontSize: 16,
         marginBottom: 12,
-        color: '#000'
+        color: '#000',
     },
     filterRow: {
         flexDirection: 'row',

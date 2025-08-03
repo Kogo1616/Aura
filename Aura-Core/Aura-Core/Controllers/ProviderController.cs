@@ -5,16 +5,16 @@ namespace Aura_Core.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class ProviderController : ControllerBase
 {
     private readonly IUserService _userService;
 
-    public UserController(IUserService userService)
+    public ProviderController(IUserService userService)
     {
         _userService = userService;
     }
 
-    [HttpGet]
+    [HttpGet("providers")]
     public async Task<IActionResult> Providers()
     {
         var providers = await _userService.GetUsers();

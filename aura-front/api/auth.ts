@@ -45,8 +45,14 @@ export async function registerUser(email: string, password: string) {
 }
 
 // lib/api.ts
-export async function fetchUsers() {
-    const res = await fetch('http://192.168.100.3:5020/api/User', {
+
+export type ProviderDto = {
+    id: string;
+    userName: string;
+};
+
+export async function fetchProviders(): Promise<ProviderDto[]> {
+    const res = await fetch('http://192.168.100.3:5020/api/Provider/providers', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -54,9 +60,10 @@ export async function fetchUsers() {
     });
 
     if (!res.ok) {
-        throw new Error('Failed to fetch users');
+        throw new Error('Failed to fetch providers');
     }
 
     return res.json();
 }
+
 
