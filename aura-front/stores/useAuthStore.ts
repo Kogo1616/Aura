@@ -1,3 +1,4 @@
+// stores/useAuthStore.ts
 import { create } from 'zustand';
 
 export type AuthUser = {
