@@ -1,5 +1,5 @@
 export async function loginUser(email: string, password: string) {
-    const res = await fetch('http://192.168.100.3:5020/login', {
+    const res = await fetch('http://192.168.100.4:5020/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
@@ -24,11 +24,28 @@ export async function loginUser(email: string, password: string) {
     };
 }
 
-export async function registerUser(email: string, password: string, role: 'user' | 'provider') {
-    const registerRes = await fetch('http://192.168.100.3:5020/register', {
+//email, password, role, firstName, lastName, phoneNumber, role === 'provider' ? skills : undefined
+
+// api/auth.ts
+
+type RegisterRequest = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    userName: string;
+    password: string;
+    role: 'user' | 'provider';
+    avatarUrl: string;
+    bio: string;
+    skills?: number[]; // This is the fix: an optional array of skill IDs
+};
+
+export async function registerUser(request: RegisterRequest) {
+    const registerRes = await fetch('http://192.168.100.4:5020/api/Auth/register', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({email, password, role}),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request),
     });
 
     if (!registerRes.ok) {
@@ -37,29 +54,8 @@ export async function registerUser(email: string, password: string, role: 'user'
     }
 
     return {
-        name: 'User',
-        email,
-        role,
+        name: `${request.firstName} ${request.lastName}`,
+        email: request.email,
+        role: request.role,
     };
 }
-
-export async function fetchProviders(): Promise<ProviderDto[]> {
-    const res = await fetch('http://192.168.100.3:5020/api/Provider/providers', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-
-    if (!res.ok) {
-        throw new Error('Failed to fetch providers');
-    }
-
-    return res.json();
-}
-
-export type ProviderDto = {
-    id: string;
-    userName: string;
-};
-

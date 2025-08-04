@@ -7,17 +7,24 @@ namespace Aura_Core.Controllers;
 [Route("api/[controller]")]
 public class ProviderController : ControllerBase
 {
-    private readonly IUserService _userService;
+    private readonly IProviderService _providerService;
 
-    public ProviderController(IUserService userService)
+    public ProviderController(IProviderService providerService)
     {
-        _userService = userService;
+        _providerService = providerService;
     }
 
     [HttpGet("providers")]
     public async Task<IActionResult> Providers()
     {
-        var providers = await _userService.GetUsers();
+        var providers = await _providerService.GetUsers();
         return Ok(providers);
+    }
+
+    [HttpGet("get-skills")]
+    public IActionResult Skills()
+    {
+        var skills = _providerService.GetSkills();
+        return Ok(skills);
     }
 }

@@ -79,4 +79,6 @@ public class AuraDbContext : IdentityDbContext<User>
     public DbSet<Service> Services { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Booking> Bookings { get; set; }
+    public DbSet<Skill> Skills { get; set; }
+    public DbSet<ProviderSkill> ProviderSkills { get; set; }
 }

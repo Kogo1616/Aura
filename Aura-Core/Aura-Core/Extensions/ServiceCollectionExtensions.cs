@@ -64,7 +64,7 @@ public static class ServiceCollectionExtensions
             });
         });
 
-        services.AddTransient<IUserService, ProviderService>();
+        services.AddTransient<IProviderService, ProviderService>();
         services.AddTransient<IAuthService, AuthService>();
 
         return services;

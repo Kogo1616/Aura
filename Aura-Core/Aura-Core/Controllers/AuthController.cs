@@ -6,11 +6,11 @@ namespace Aura_Core.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthCotroller : ControllerBase
+public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
 
-    public AuthCotroller(IAuthService authService)
+    public AuthController(IAuthService authService)
     {
         _authService = authService;
     }

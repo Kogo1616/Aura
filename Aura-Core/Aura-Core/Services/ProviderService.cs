@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aura_Core.Services;
 
-public class ProviderService : IUserService
+public class ProviderService : IProviderService
 {
     private readonly AuraDbContext _dbContext;
     private readonly UserManager<User> _userManager;
@@ -20,7 +20,14 @@ public class ProviderService : IUserService
     public async Task<List<User>> GetUsers()
     {
         var providers = (await _userManager.GetUsersInRoleAsync("Provider")).ToList();
-        
+
         return providers;
+    }
+
+    public List<Skill> GetSkills()
+    {
+        return _dbContext.Skills
+            .Where(x => x.Status)
+            .ToList();
     }
 }

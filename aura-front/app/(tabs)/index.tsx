@@ -12,7 +12,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import {router} from 'expo-router';
-import {fetchProviders, ProviderDto} from '../../api/auth';
+import {fetchProviders, ProviderDto} from '../../api/provider';
 
 type Provider = {
     id: string;
