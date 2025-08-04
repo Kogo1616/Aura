@@ -79,19 +79,16 @@ public class AuthService : IAuthService
         if (request.Skills?.Any() == true)
         {
             var validSkills = _context.Skills
-                .Where(s => request.Skills.Contains(s.Id))
-                .ToDictionary(s => s.Id);
+                .Where(x => request.Skills.Contains(x.SkillId))
+                .Select(x => x.SkillId);
 
             foreach (var skillId in request.Skills)
             {
-                if (validSkills.TryGetValue(skillId, out var skill))
+                _context.ProviderSkills.Add(new ProviderSkill
                 {
-                    _context.ProviderSkills.Add(new ProviderSkill
-                    {
-                        UserId = user.Id,
-                        SkillId = skill.Id
-                    });
-                }
+                    UserId = user.Id,
+                    SkillId = skillId
+                });
             }
         }
     }
