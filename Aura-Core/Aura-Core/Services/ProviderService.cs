@@ -1,6 +1,7 @@
 using Aura_Core.DbContext;
 using Aura_Core.Interfaces;
 using Aura_Core.Models.DbModels;
+using Aura_Core.Models.Response;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,11 +18,29 @@ public class ProviderService : IProviderService
         _userManager = userManager;
     }
 
-    public async Task<List<User>> GetUsers()
+    public async Task<List<ProviderResponseModel>> GetProviders()
     {
-        var providers = (await _userManager.GetUsersInRoleAsync("Provider")).ToList();
+        var providerUsers = await _userManager.GetUsersInRoleAsync("Provider");
+        
+        var providerIds = providerUsers
+            .Select(u => u.Id)
+            .ToList();
 
-        return providers;
+        var usersWithDetails = _dbContext.Users
+            .Where(u => providerIds.Contains(u.Id))
+            .Include(u => u.ProviderDetail)
+            .ToList();
+
+        var response = usersWithDetails.Select(user => new ProviderResponseModel
+        {
+            Id = user.Id,
+            AvatarUrl = user.ProviderDetail?.AvatarUrl,
+            FullName = $"{user.FirstName} {user.LastName}",
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber
+        }).ToList();
+
+        return response;
     }
 
     public List<Skill> GetSkills()

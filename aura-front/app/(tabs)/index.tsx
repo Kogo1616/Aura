@@ -1,5 +1,3 @@
-// app/(tabs)/home.tsx
-
 import React, {useEffect, useState} from 'react';
 import {
     View,
@@ -33,12 +31,24 @@ export default function HomeScreen() {
             try {
                 const data = await fetchProviders();
                 console.log(data);
+
                 const mapped = data.map((user: ProviderDto, i: number) => ({
                     id: user.id,
-                    name: user.userName,
-                    category: i % 3 === 0 ? 'Hair Stylist' : i % 3 === 1 ? 'Massage Therapist' : 'Makeup Artist',
+                    name: user.fullName,
+                    category:
+                        i % 3 === 0
+                            ? 'Hair Stylist'
+                            : i % 3 === 1
+                                ? 'Massage Therapist'
+                                : 'Makeup Artist',
                     rating: +(4 + Math.random()).toFixed(1),
-                    image: `https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i}.jpg`,
+                    image:
+                        user.avatarUrl?.startsWith('http') ||
+                        user.avatarUrl?.startsWith('file')
+                            ? user.avatarUrl
+                            : `https://randomuser.me/api/portraits/${
+                                i % 2 === 0 ? 'women' : 'men'
+                            }/${i}.jpg`,
                 }));
 
                 setProviders(mapped);
@@ -108,7 +118,8 @@ export default function HomeScreen() {
                 contentContainerStyle={{paddingBottom: 20}}
                 renderItem={({item}) => (
                     <TouchableOpacity onPress={() => handleSelect(item)} style={styles.card}>
-                        <Image source={{uri: item.image}} style={styles.avatar}/>
+                        <Image source={{uri: item.image}} style={styles.avatar}
+                               onError={(e) => console.log('Image load error:', e.nativeEvent)}/>
                         <View style={styles.info}>
                             <Text style={styles.name}>{item.name}</Text>
                             <Text style={styles.category}>{item.category}</Text>

@@ -17,7 +17,7 @@ public class ProviderController : ControllerBase
     [HttpGet("providers")]
     public async Task<IActionResult> Providers()
     {
-        var providers = await _providerService.GetUsers();
+        var providers = await _providerService.GetProviders();
         return Ok(providers);
     }
 

@@ -48,6 +48,9 @@ export async function fetchProviders(): Promise<ProviderDto[]> {
 
 export type ProviderDto = {
     id: string;
-    userName: string;
+    fullName: string;
+    email: string;
+    avatarUrl: string;
+    phoneNumber: string;
 };
 
