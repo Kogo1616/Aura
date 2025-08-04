@@ -33,58 +33,23 @@ public class AuthService : IAuthService
             };
 
             var createResult = await _userManager.CreateAsync(user, request.Password);
-
             if (!createResult.Succeeded)
                 return createResult;
 
-            // Assign role
             await _userManager.AddToRoleAsync(user, request.Role);
 
-            // Insert additional data
-            if (request.Role.Equals("provider", StringComparison.OrdinalIgnoreCase))
+            var normalizedRole = request.Role?.Trim().ToLowerInvariant();
+
+            if (normalizedRole == "provider")
             {
-                var providerDetail = new ProviderUserDetail
-                {
-                    UserId = user.Id,
-                    AvatarUrl = request.AvatarUrl,
-                    Bio = request.Bio,
-                    User = user
-                };
-
-              await  _context.ProviderUserDetails.AddAsync(providerDetail);
-
-                // // Optionally handle skills if needed
-                // if (request.Skills != null && request.Skills.Any())
-                // {
-                //     foreach (var skillName in request.Skills)
-                //     {
-                //         var skill = _context.Skills
-                //             .FirstOrDefault(s => s.Name == skillName);
-                //
-                //         if (skill == null)
-                //         {
-                //             skill = new Skill { Name = skillName };
-                //             _context.Skills.Add(skill);
-                //             await _context.SaveChangesAsync();
-                //         }
-                //
-                //         _context.ProviderSkills.Add(new ProviderSkill
-                //         {
-                //             UserId = user.Id,
-                //             SkillId = skill.Id
-                //         });
-                //     }
-                // }
+                await CreateProviderDetailsAsync(user, request);
             }
-            else if (request.Role.Equals("user", StringComparison.OrdinalIgnoreCase))
+            else if (normalizedRole == "user")
             {
-                var regularDetail = new RegularUserDetail
+                await _context.RegularUserDetails.AddAsync(new RegularUserDetail
                 {
-                    UserId = user.Id,
-                    User = user
-                };
-
-                await _context.RegularUserDetails.AddAsync(regularDetail);
+                    UserId = user.Id
+                });
             }
 
             await _context.SaveChangesAsync();
@@ -95,8 +60,39 @@ public class AuthService : IAuthService
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            // Optionally log exception
             throw new ApplicationException("User registration failed.", ex);
+        }
+    }
+
+    private async Task CreateProviderDetailsAsync(User user, UserRegisterReuquestModel request)
+    {
+        var providerDetail = new ProviderUserDetail
+        {
+            UserId = user.Id,
+            AvatarUrl = request.AvatarUrl,
+            Location = "Kutaisi", // You may want to make this dynamic later
+            Bio = request.Bio
+        };
+
+        await _context.ProviderUserDetails.AddAsync(providerDetail);
+
+        if (request.Skills?.Any() == true)
+        {
+            var validSkills = _context.Skills
+                .Where(s => request.Skills.Contains(s.Id))
+                .ToDictionary(s => s.Id);
+
+            foreach (var skillId in request.Skills)
+            {
+                if (validSkills.TryGetValue(skillId, out var skill))
+                {
+                    _context.ProviderSkills.Add(new ProviderSkill
+                    {
+                        UserId = user.Id,
+                        SkillId = skill.Id
+                    });
+                }
+            }
         }
     }
 }

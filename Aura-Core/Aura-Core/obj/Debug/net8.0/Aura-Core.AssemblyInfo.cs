@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Aura-Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1d96c9276f6b072666abae4793c0d3bfafddb83d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ec6c57c33caa9cf945afdf48a904f23ea46ec53")]
 [assembly: System.Reflection.AssemblyProductAttribute("Aura-Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Aura-Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
