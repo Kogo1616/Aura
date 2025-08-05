@@ -1,7 +1,12 @@
+import { API_BASE_URL } from './config';
+
 export async function loginUser(email: string, password: string) {
-    const res = await fetch('http://192.168.100.4:5020/login', {
+    const res = await fetch(`${API_BASE_URL}/login`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            
+        },
         credentials: 'include',
         body: JSON.stringify({
             email,
@@ -16,17 +21,15 @@ export async function loginUser(email: string, password: string) {
         throw new Error(error || 'Login failed');
     }
 
-    // Return mocked user if backend doesn't send one
+    const data = await res.json();
+
     return {
-        name: 'User',
-        email,
-        role: 'user',
+        name: data.name ?? 'User',
+        email: data.email ?? email,
+        role: data.role ?? 'user',
     };
 }
 
-//email, password, role, firstName, lastName, phoneNumber, role === 'provider' ? skills : undefined
-
-// api/auth.ts
 
 type RegisterRequest = {
     firstName: string;
@@ -38,11 +41,11 @@ type RegisterRequest = {
     role: 'user' | 'provider';
     avatarUrl: string;
     bio: string;
-    skills?: number[]; // This is the fix: an optional array of skill IDs
+    skills?: number[];
 };
 
 export async function registerUser(request: RegisterRequest) {
-    const registerRes = await fetch('http://192.168.100.4:5020/api/Auth/register', {
+    const registerRes = await fetch(`${API_BASE_URL}/api/Auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(request),

@@ -1,10 +1,12 @@
+import {API_BASE_URL} from './config';
+
 export interface Skill {
     id: number;
     name: string;
 }
 
 export async function fetchSkills(): Promise<Skill[]> {
-    const res = await fetch('http://192.168.100.4:5020/api/Provider/get-skills');
+    const res = await fetch(`${API_BASE_URL}/api/Provider/get-skills`);
 
     if (!res.ok) {
         throw new Error('Failed to fetch skills');
@@ -32,7 +34,7 @@ export type RegisterRequest = {
 };
 
 export async function fetchProviders(): Promise<ProviderDto[]> {
-    const res = await fetch('http://192.168.100.4:5020/api/Provider/providers', {
+    const res = await fetch(`${API_BASE_URL}/api/Provider/providers`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

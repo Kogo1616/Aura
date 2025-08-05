@@ -25,8 +25,11 @@ public static class ServiceCollectionExtensions
             .AddEntityFrameworkStores<AuraDbContext>()
             .AddApiEndpoints();
 
-        services.AddAuthentication()
-            .AddBearerToken(IdentityConstants.BearerScheme);
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = IdentityConstants.BearerScheme;
+            options.DefaultChallengeScheme = IdentityConstants.BearerScheme;
+        }).AddBearerToken(IdentityConstants.BearerScheme);
 
         services.AddDbContext<AuraDbContext>(options =>
             options.UseSqlServer(connectionString));

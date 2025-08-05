@@ -1,4 +1,5 @@
 using Aura_Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aura_Core.Controllers;
@@ -14,6 +15,7 @@ public class ProviderController : ControllerBase
         _providerService = providerService;
     }
 
+    [Authorize]
     [HttpGet("providers")]
     public async Task<IActionResult> Providers()
     {
