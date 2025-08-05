@@ -27,6 +27,16 @@ export default function TabsLayout() {
                 <Tabs.Screen name="bookings" />
                 <Tabs.Screen name="notifications" />
                 <Tabs.Screen name="profile" />
+                <Tabs.Screen
+                    name="ai-designer"
+                    options={{
+                        title: 'AI',
+                        tabBarIcon: ({ color, size }) => (
+                            <Ionicons name="sparkles" size={size} color={color} />
+                        ),
+                    }}
+                />
+
             </Tabs>
         </View>
     );

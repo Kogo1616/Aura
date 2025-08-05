@@ -1,6 +1,5 @@
 using Aura_Core.DbContext;
 using Aura_Core.Interfaces;
-using Aura_Core.Models;
 using Aura_Core.Models.DbModels;
 using Aura_Core.Services;
 using Microsoft.AspNetCore.Identity;

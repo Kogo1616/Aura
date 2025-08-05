@@ -15,7 +15,6 @@ public class ProviderController : ControllerBase
         _providerService = providerService;
     }
 
-    [Authorize]
     [HttpGet("providers")]
     public async Task<IActionResult> Providers()
     {
