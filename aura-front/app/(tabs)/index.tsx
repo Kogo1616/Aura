@@ -10,9 +10,11 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import {router} from 'expo-router';
-import {fetchProviders, ProviderDto} from '../../api/provider';
+import {fetchProviders} from '../../api/provider';
+import {Provider} from "@/types/providers/Providers";
 
-type Provider = {
+
+type ProviderResponse = {
     id: string;
     name: string;
     category: string;
@@ -21,8 +23,8 @@ type Provider = {
 };
 
 export default function HomeScreen() {
-    const [providers, setProviders] = useState<Provider[]>([]);
-    const [filtered, setFiltered] = useState<Provider[]>([]);
+    const [providers, setProviders] = useState<ProviderResponse[]>([]);
+    const [filtered, setFiltered] = useState<ProviderResponse[]>([]);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
 
@@ -32,7 +34,7 @@ export default function HomeScreen() {
                 const data = await fetchProviders();
                 console.log(data);
 
-                const mapped = data.map((user: ProviderDto, i: number) => ({
+                const mapped = data.map((user: Provider, i: number) => ({
                     id: user.id,
                     name: user.fullName,
                     category:
@@ -71,7 +73,7 @@ export default function HomeScreen() {
         setFiltered(filteredData);
     };
 
-    const handleSelect = (item: Provider) => {
+    const handleSelect = (item: ProviderResponse) => {
         router.push({
             pathname: '../provider-details',
             params: {
