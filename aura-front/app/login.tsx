@@ -17,7 +17,7 @@ export default function LoginScreen() {
             Alert.alert('Please fill all fields');
             return;
         }
-
+        
         setLoading(true);
         try {
             const user = await loginUser(email, password);

@@ -1,9 +1,5 @@
 import {API_BASE_URL} from './config';
-
-export interface Skill {
-    id: number;
-    name: string;
-}
+import {Provider, Providers, Skill} from "@/types/providers/Providers";
 
 export async function fetchSkills(): Promise<Skill[]> {
     const res = await fetch(`${API_BASE_URL}/api/Provider/get-skills`);
@@ -20,20 +16,7 @@ export async function fetchSkills(): Promise<Skill[]> {
     }));
 }
 
-export type RegisterRequest = {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
-    userName: string;
-    password: string;
-    role: 'user' | 'provider';
-    avatarUrl: string;
-    bio: string;
-    skills?: number[]; // Array of skill IDs
-};
-
-export async function fetchProviders(): Promise<ProviderDto[]> {
+export async function fetchProviders(): Promise<Provider[]> {
     const res = await fetch(`${API_BASE_URL}/api/Provider/providers`, {
         method: 'GET',
         headers: {
@@ -48,11 +31,12 @@ export async function fetchProviders(): Promise<ProviderDto[]> {
     return res.json();
 }
 
-export type ProviderDto = {
-    id: string;
-    fullName: string;
-    email: string;
-    avatarUrl: string;
-    phoneNumber: string;
-};
+export async function fetchProviderDetails(providerId: any): Promise<Providers> {
+    const res = await fetch(`${API_BASE_URL}/api/Provider/get-provider-details?providerId=${providerId}`);
 
+    if (!res.ok) {
+        throw new Error('Failed to fetch provider details');
+    }
+
+    return res.json();
+}

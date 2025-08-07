@@ -1,4 +1,5 @@
 import { API_BASE_URL } from './config';
+import {RegisterRequest} from "@/types/auths/auth";
 
 export async function loginUser(email: string, password: string) {
     const res = await fetch(`${API_BASE_URL}/login`, {
@@ -29,20 +30,6 @@ export async function loginUser(email: string, password: string) {
         role: data.role ?? 'user',
     };
 }
-
-
-type RegisterRequest = {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
-    userName: string;
-    password: string;
-    role: 'user' | 'provider';
-    avatarUrl: string;
-    bio: string;
-    skills?: number[];
-};
 
 export async function registerUser(request: RegisterRequest) {
     const registerRes = await fetch(`${API_BASE_URL}/api/Auth/register`, {
