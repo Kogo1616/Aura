@@ -18,20 +18,6 @@ export default function ProfileScreen() {
         Alert.alert('Edit Profile', 'This will open an editable form soon.');
     };
 
-    const handleLogout = () => {
-        Alert.alert('Logout', 'Are you sure you want to log out?', [
-            { text: 'Cancel', style: 'cancel' },
-            {
-                text: 'Logout',
-                style: 'destructive',
-                onPress: () => {
-                    logout();
-                    router.replace('/login');
-                },
-            },
-        ]);
-    };
-
     if (!user) {
         return (
             <View style={styles.centered}>
@@ -39,7 +25,8 @@ export default function ProfileScreen() {
             </View>
         );
     }
-
+    console.log(user?.id);
+    console.log(user?.name);
     return (
         <View style={styles.container}>
             <Image

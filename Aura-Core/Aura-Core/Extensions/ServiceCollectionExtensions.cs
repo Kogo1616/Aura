@@ -68,6 +68,7 @@ public static class ServiceCollectionExtensions
 
         services.AddTransient<IProviderService, ProviderService>();
         services.AddTransient<IAuthService, AuthService>();
+        services.AddTransient<ITokenService, TokenService>();
 
         return services;
     }

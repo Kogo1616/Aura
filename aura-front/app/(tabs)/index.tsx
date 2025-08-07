@@ -13,7 +13,6 @@ import {router} from 'expo-router';
 import {fetchProviders} from '../../api/provider';
 import {Provider} from "@/types/providers/Providers";
 
-
 type ProviderResponse = {
     id: string;
     name: string;
@@ -32,7 +31,6 @@ export default function HomeScreen() {
         const loadProviders = async () => {
             try {
                 const data = await fetchProviders();
-                console.log(data);
 
                 const mapped = data.map((user: Provider, i: number) => ({
                     id: user.id,

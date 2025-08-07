@@ -1,20 +1,16 @@
 import { API_BASE_URL } from './config';
-import {RegisterRequest} from "@/types/auths/auth";
+import { RegisterRequest } from '@/types/auths/auth';
+import { useAuthStore, AuthUser } from '@/stores/useAuthStore';
+import {LoginApiResponse} from "@/types/auths/response/loginResponse";
 
 export async function loginUser(email: string, password: string) {
-    const res = await fetch(`${API_BASE_URL}/login`, {
+    const res = await fetch(`${API_BASE_URL}/api/Auth/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            
         },
         credentials: 'include',
-        body: JSON.stringify({
-            email,
-            password,
-            twoFactorCode: '',
-            twoFactorRecoveryCode: '',
-        }),
+        body: JSON.stringify({ email, password }),
     });
 
     if (!res.ok) {
@@ -22,13 +18,20 @@ export async function loginUser(email: string, password: string) {
         throw new Error(error || 'Login failed');
     }
 
-    const data = await res.json();
+    const data: LoginApiResponse = await res.json();
 
-    return {
-        name: data.name ?? 'User',
-        email: data.email ?? email,
-        role: data.role ?? 'user',
+    const user: AuthUser = {
+        id: data.user.id,
+        name: data.user.name ?? 'User',
+        email: data.user.email,
+        role: data.user.role ?? 'user',
+        avatar: data.user.avatar,
     };
+
+    // Save to Zustand store
+    useAuthStore.getState().login(user);
+
+    return user;
 }
 
 export async function registerUser(request: RegisterRequest) {
