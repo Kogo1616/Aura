@@ -34,4 +34,10 @@ public class ProviderController : ControllerBase
         var providerDetail = _providerService.GetProviderDetails(providerId);
         return Ok(providerDetail);
     }
+
+    [HttpPatch("update-user-details")]
+    public IActionResult UpdateProvider(string providerId)
+    {
+        return Ok();
+    }
 }

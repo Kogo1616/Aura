@@ -76,7 +76,8 @@ public class AuthService : IAuthService
             return ServiceResponse<LoginResponseModel>.Fail("Invalid credentials");
         }
 
-        // Token generation (simplified example)
+        var userRoles = await _userManager.GetRolesAsync(user);
+
         var accessToken = _tokenService.GenerateAccessToken(user);
         var refreshToken = _tokenService.GenerateRefreshToken();
 
@@ -88,9 +89,9 @@ public class AuthService : IAuthService
             User = new AuthUserModel
             {
                 Id = user.Id,
-                Name = user.UserName,
+                Name = user.FirstName + " " + user.LastName,
                 Email = user.Email,
-                Role = "User", // Or fetch from user roles
+                Role = userRoles.FirstOrDefault() ?? "User", // ✅ use first role or fallback
             }
         });
     }
