@@ -10,6 +10,7 @@ public class Review
     [Range(1, 5)] public int Rating { get; set; }
 
     public string? Comment { get; set; }
+    
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     [Required] public int ProviderId { get; set; }

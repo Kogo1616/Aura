@@ -86,7 +86,7 @@ public class AuthService : IAuthService
             {
                 _context.ProviderSkills.Add(new ProviderSkill
                 {
-                    UserId = user.Id,
+                    //ProviderProfileId = user.Id,
                     SkillId = skillId
                 });
             }

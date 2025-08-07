@@ -28,4 +28,11 @@ public class ProviderController : ControllerBase
         var skills = _providerService.GetSkills();
         return Ok(skills);
     }
+
+    [HttpGet("get-provider-details")]
+    public IActionResult ProviderDetails(string providerId)
+    {
+        var providerDetail = _providerService.GetProviderDetails(providerId);
+        return Ok(providerDetail);
+    }
 }

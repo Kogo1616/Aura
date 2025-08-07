@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Aura_Core.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialSchema : Migration
+    public partial class UpdateProviderProfileStructure : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -55,6 +55,22 @@ namespace Aura_Core.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Skills",
+                schema: "aura",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SkillId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Skills", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -182,9 +198,10 @@ namespace Aura_Core.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false)
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -206,8 +223,6 @@ namespace Aura_Core.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PreferredLanguage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -218,6 +233,35 @@ namespace Aura_Core.Migrations
                         column: x => x.UserId,
                         principalSchema: "aura",
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProviderSkills",
+                schema: "aura",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SkillId = table.Column<int>(type: "int", nullable: false),
+                    ProviderProfileId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProviderSkills", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProviderSkills_ProviderUserDetails_ProviderProfileId",
+                        column: x => x.ProviderProfileId,
+                        principalSchema: "aura",
+                        principalTable: "ProviderUserDetails",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProviderSkills_Skills_SkillId",
+                        column: x => x.SkillId,
+                        principalSchema: "aura",
+                        principalTable: "Skills",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -372,6 +416,18 @@ namespace Aura_Core.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProviderSkills_ProviderProfileId",
+                schema: "aura",
+                table: "ProviderSkills",
+                column: "ProviderProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProviderSkills_SkillId",
+                schema: "aura",
+                table: "ProviderSkills",
+                column: "SkillId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProviderUserDetails_UserId",
                 schema: "aura",
                 table: "ProviderUserDetails",
@@ -432,6 +488,10 @@ namespace Aura_Core.Migrations
                 schema: "aura");
 
             migrationBuilder.DropTable(
+                name: "ProviderSkills",
+                schema: "aura");
+
+            migrationBuilder.DropTable(
                 name: "RegularUserDetails",
                 schema: "aura");
 
@@ -445,6 +505,10 @@ namespace Aura_Core.Migrations
 
             migrationBuilder.DropTable(
                 name: "Services",
+                schema: "aura");
+
+            migrationBuilder.DropTable(
+                name: "Skills",
                 schema: "aura");
 
             migrationBuilder.DropTable(

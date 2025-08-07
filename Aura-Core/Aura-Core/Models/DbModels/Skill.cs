@@ -10,5 +10,5 @@ public class Skill
     [Required] public string Name { get; set; }
     public bool Status { get; set; } = true;
 
-    public List<ProviderSkill> ProviderSkills { get; set; }
+    public List<ProviderSkill> ProviderSkills { get; set; } = new();
 }

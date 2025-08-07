@@ -65,18 +65,17 @@ namespace Aura_Core.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ProviderProfileId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SkillId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("SkillId");
+                    b.HasIndex("ProviderProfileId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("SkillId");
 
                     b.ToTable("ProviderSkills", "aura");
                 });
@@ -455,21 +454,21 @@ namespace Aura_Core.Migrations
 
             modelBuilder.Entity("Aura_Core.Models.DbModels.ProviderSkill", b =>
                 {
+                    b.HasOne("Aura_Core.Models.DbModels.ProviderUserDetail", "ProviderUserDetail")
+                        .WithMany("ProviderSkills")
+                        .HasForeignKey("ProviderProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Aura_Core.Models.DbModels.Skill", "Skill")
                         .WithMany("ProviderSkills")
                         .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aura_Core.Models.DbModels.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("ProviderUserDetail");
 
                     b.Navigation("Skill");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Aura_Core.Models.DbModels.ProviderUserDetail", b =>
@@ -576,6 +575,8 @@ namespace Aura_Core.Migrations
 
             modelBuilder.Entity("Aura_Core.Models.DbModels.ProviderUserDetail", b =>
                 {
+                    b.Navigation("ProviderSkills");
+
                     b.Navigation("Reviews");
 
                     b.Navigation("Services");

@@ -21,7 +21,7 @@ public class ProviderService : IProviderService
     public async Task<List<ProviderResponseModel>> GetProviders()
     {
         var providerUsers = await _userManager.GetUsersInRoleAsync("Provider");
-        
+
         var providerIds = providerUsers
             .Select(u => u.Id)
             .ToList();
@@ -29,16 +29,52 @@ public class ProviderService : IProviderService
         var usersWithDetails = _dbContext.Users
             .Where(u => providerIds.Contains(u.Id))
             .Include(u => u.ProviderDetail)
+            .ThenInclude(pd => pd.ProviderSkills)
+            .ThenInclude(ps => ps.Skill)
             .ToList();
 
         var response = usersWithDetails.Select(user => new ProviderResponseModel
         {
             Id = user.Id,
-            AvatarUrl = user.ProviderDetail?.AvatarUrl,
             FullName = $"{user.FirstName} {user.LastName}",
+            AvatarUrl = user.ProviderDetail?.AvatarUrl,
             Email = user.Email,
-            PhoneNumber = user.PhoneNumber
+            PhoneNumber = user.PhoneNumber,
+            Skills = user.ProviderDetail?.ProviderSkills
+                .Select(ps => ps.Skill.Name)
+                .ToList() ?? new List<string>()
         }).ToList();
+
+        return response;
+    }
+
+    public ProviderDetailResponseModel GetProviderDetails(string providerId)
+    {
+        var providerDetails = _dbContext.ProviderUserDetails
+            .Include(x => x.User)
+            .Include(pd => pd.ProviderSkills)
+            .ThenInclude(ps => ps.Skill)
+            .FirstOrDefault(x => x.UserId == providerId);
+
+        if (providerDetails == null)
+        {
+            return new ProviderDetailResponseModel();
+        }
+
+        var response = new ProviderDetailResponseModel
+        {
+            Id = providerDetails.User.Id,
+            FullName = providerDetails.User.FirstName + " " + providerDetails.User.LastName,
+            Email = providerDetails.User.Email,
+            PhoneNumber = providerDetails.User.PhoneNumber,
+            AvatarUrl = providerDetails.AvatarUrl,
+            Bio = providerDetails.Bio,
+            IsAvaliable = providerDetails.IsAvailable,
+            Location = providerDetails.Location,
+            Skills = providerDetails.ProviderSkills
+                .Select(ps => ps.Skill.Name)
+                .ToList(),
+        };
 
         return response;
     }

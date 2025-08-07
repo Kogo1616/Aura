@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aura_Core.Migrations
 {
     [DbContext(typeof(AuraDbContext))]
-    [Migration("20250804185934_ADdLocations")]
-    partial class ADdLocations
+    [Migration("20250807074149_UpdateProviderProfileStructure")]
+    partial class UpdateProviderProfileStructure
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,18 +68,17 @@ namespace Aura_Core.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ProviderProfileId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SkillId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("SkillId");
+                    b.HasIndex("ProviderProfileId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("SkillId");
 
                     b.ToTable("ProviderSkills", "aura");
                 });
@@ -221,6 +220,9 @@ namespace Aura_Core.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SkillId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -455,21 +457,21 @@ namespace Aura_Core.Migrations
 
             modelBuilder.Entity("Aura_Core.Models.DbModels.ProviderSkill", b =>
                 {
+                    b.HasOne("Aura_Core.Models.DbModels.ProviderUserDetail", "ProviderUserDetail")
+                        .WithMany("ProviderSkills")
+                        .HasForeignKey("ProviderProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Aura_Core.Models.DbModels.Skill", "Skill")
                         .WithMany("ProviderSkills")
                         .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aura_Core.Models.DbModels.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("ProviderUserDetail");
 
                     b.Navigation("Skill");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Aura_Core.Models.DbModels.ProviderUserDetail", b =>
@@ -576,6 +578,8 @@ namespace Aura_Core.Migrations
 
             modelBuilder.Entity("Aura_Core.Models.DbModels.ProviderUserDetail", b =>
                 {
+                    b.Navigation("ProviderSkills");
+
                     b.Navigation("Reviews");
 
                     b.Navigation("Services");

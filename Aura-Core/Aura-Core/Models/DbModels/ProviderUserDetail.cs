@@ -20,6 +20,8 @@ public class ProviderUserDetail
     public List<Service> Services { get; set; } = new();
 
     public List<Review> Reviews { get; set; } = new();
+    
+    public List<ProviderSkill> ProviderSkills { get; set; } = new();
 
     [ForeignKey("UserId")] public User User { get; set; }
 }
